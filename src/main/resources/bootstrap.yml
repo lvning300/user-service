@@ -1,9 +1,49 @@
+server:
+  port: 9000
 spring:
   application:
-    name: user-service
-  cloud:
-    config:
-      uri: http://127.0.0.1:8888
-      enabled: true
+    name: lambda-service
+  datasource:
+    hikari:
+      idle-timeout: 60000
+      maximum-pool-size: 10
+      minimum-idle: 10
+      connection-timeout: 20000
+      connection-test-query: SELECT 1
+      pool-name: HikariPool
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/ibp?useSSL=false&useUnicode=true&characterEncoding=utf-8&verifyServerCertificate=false
+    username: root
+    password: 123456
+
+
+mapper:
+  mappers:
+    - tk.mybatis.mapper.common.Mapper
+  notEmpty: false
+  identity: MYSQL
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath*:META-INF/mapper/**/*.xml
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+#启用监控
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "*"  # 开放所有端点health，info，metrics，通过actuator/+端点名就可以获取相应的信息。默认打开health和info
+  endpoint:
+    health:
+      show-details: always  #未开启actuator/health时，我们获取到的信息是{"status":"UP"}，status的值还有可能是 DOWN。开启后打印详细信息
+
+
 
 
